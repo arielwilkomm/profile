@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +22,7 @@ public class UserEntity {
 	
 	private String name;
 	
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@Column(name = "bith_date")
 	private LocalDate bithDate;
 	

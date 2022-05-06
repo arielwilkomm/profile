@@ -1,15 +1,18 @@
 package br.com.profile.user.sevice;
 
+import org.springframework.stereotype.Service;
+
 import br.com.profile.user.dto.UserDTO;
 
+@Service
 public interface UserService {
 
 	UserDTO getUser(String userId);
 
-	UserDTO putUser(String userId);
+	UserDTO putUser(UserDTO user);
 
-	UserDTO postUser(String userId);
+	UserDTO postUser(UserDTO user);
 
-	UserDTO deleteUser(String userId);
+	void deleteUser(String userId);
 
 }

@@ -1,24 +1,28 @@
 package br.com.profile.user.controller;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.profile.user.dto.UserDTO;
 import br.com.profile.user.sevice.UserService;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RestController(value = "/v1/user/")
+@RestController
 public class UserController {
 
+	@Autowired
 	private UserService userService;
 
-	@GetMapping(value = { "{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
+	@GetMapping(value = { "/v1/user/{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDTO> getUser(@PathVariable("userId") String userId) {
 		
@@ -27,28 +31,28 @@ public class UserController {
 		
 	}
 	
-	@PutMapping(value = { "{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
+	@PutMapping(value = { "/v1/user"}, produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDTO> putUser(@PathVariable("userId") String userId) {
+	public ResponseEntity<UserDTO> putUser(@Valid @RequestBody UserDTO user) {
 		
-		UserDTO user = this.userService.putUser(userId);
-		return ResponseEntity.ok(user);
+		UserDTO dto = this.userService.putUser(user);
+		return ResponseEntity.ok(dto);
 		
 	}
 	
-	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDTO> postUser(@PathVariable("userId") String userId) {
+	@PostMapping(value = { "/v1/user"}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserDTO> postUser(@Valid @RequestBody UserDTO user) {
 		
-		UserDTO user = this.userService.postUser(userId);
-		return ResponseEntity.ok(user);
+		UserDTO dto = this.userService.postUser(user);
+		return ResponseEntity.ok(dto);
 		
 	}
 
-	@GetMapping(value = { "{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
+	@DeleteMapping(value = { "/v1/user/{userId}"},  produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId) {
 		
-		UserDTO user = this.userService.deleteUser(userId);
+		this.userService.deleteUser(userId);
 		return ResponseEntity.ok().build();
 		
 	}
