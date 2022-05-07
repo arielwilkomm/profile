@@ -11,18 +11,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.profile.user.dto.UserDTO;
 import br.com.profile.user.sevice.UserService;
 
 @RestController
+@RequestMapping("/v1/user")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-	@GetMapping(value = { "/v1/user/{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
+	@GetMapping(value = { "/{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDTO> getUser(@PathVariable("userId") String userId) {
 		
@@ -31,7 +33,7 @@ public class UserController {
 		
 	}
 	
-	@PutMapping(value = { "/v1/user"}, produces = MediaType.APPLICATION_JSON_VALUE,
+	@PutMapping(value = { "/{userId}"}, produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDTO> putUser(@Valid @RequestBody UserDTO user) {
 		
@@ -40,7 +42,7 @@ public class UserController {
 		
 	}
 	
-	@PostMapping(value = { "/v1/user"}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDTO> postUser(@Valid @RequestBody UserDTO user) {
 		
 		UserDTO dto = this.userService.postUser(user);
@@ -48,7 +50,7 @@ public class UserController {
 		
 	}
 
-	@DeleteMapping(value = { "/v1/user/{userId}"},  produces = MediaType.APPLICATION_JSON_VALUE,
+	@DeleteMapping(value = { "/{userId}"},  produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId) {
 		
