@@ -11,11 +11,11 @@ public class UserEntityMapper implements Converter<UserDTO, UserEntity> {
 	@Override
 	public UserEntity convert(MappingContext<UserDTO, UserEntity> context) {
 		UserDTO userDTO = context.getSource();
-		UserEntity userEntity = context.getDestination();
-		userDTO.setBithDate(userEntity.getBithDate());
-		userDTO.setName(userEntity.getName());
-		userDTO.setPicture(userEntity.getPicture());
-		userDTO.setUserId(userEntity.getUserId());
+		UserEntity userEntity = context.getDestination() == null ? new UserEntity() : context.getDestination();
+		userEntity.setBithDate(userDTO.getBithDate());
+		userEntity.setName(userDTO.getName());
+		userEntity.setPicture(userDTO.getPicture());
+		userEntity.setUserId(userDTO.getUserId());
         return userEntity;
 	}
 }

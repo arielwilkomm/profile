@@ -3,20 +3,20 @@ package br.com.profile.user.entities;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@Entity
+@Table
 public class UserEntity {
 	
+	@Id
 	@Column(name = "user_id")
 	private String userId;
 	

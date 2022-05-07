@@ -10,7 +10,7 @@ public class UserDTOMapper implements Converter<UserEntity, UserDTO> {
 
 	@Override
 	public UserDTO convert(MappingContext<UserEntity, UserDTO> context) {
-		UserDTO userDTO = context.getDestination();
+		UserDTO userDTO = context.getDestination() == null ? new UserDTO() : context.getDestination();
 		UserEntity userEntity = context.getSource();
 		userDTO.setBithDate(userEntity.getBithDate());
 		userDTO.setName(userEntity.getName());
