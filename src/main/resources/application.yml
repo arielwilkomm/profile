@@ -1,9 +1,18 @@
 spring:
   application:
     name: profile
+
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
+
+  sleuth:
+    enabled: false
+    sampler:
+      probability: 1.0
+  micrometer:
+    tracing:
+      enabled: true
 
   datasource:
     url: jdbc:oracle:thin:@//localdb:1521/xe
