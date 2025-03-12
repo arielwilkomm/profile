@@ -24,6 +24,7 @@
 		<feign-okhttp.version>13.0</feign-okhttp.version>
 		<commons-io.version>2.18.0</commons-io.version>
 		<spring-cloud-starter-openfeign.version>4.2.0</spring-cloud-starter-openfeign.version>
+		<springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
 	</properties>
 
 	<dependencies>
@@ -105,6 +106,11 @@
 			<groupId>io.github.openfeign</groupId>
 			<artifactId>feign-okhttp</artifactId>
 			<version>${feign-okhttp.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc-openapi-starter-webmvc-ui.version}</version>
 		</dependency>
 	</dependencies>
 

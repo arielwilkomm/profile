@@ -1,6 +1,6 @@
 ## Getting Started
 
-	* run application with variable: -Dspring.profiles.active=local
+	* run application 
 
 ### Lombok
 	* Install Lombok to your IDE
