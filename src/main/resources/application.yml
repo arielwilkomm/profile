@@ -16,10 +16,10 @@ spring:
     baseline-on-migrate: false
 
   rabbitmq:
-    host: ${RABBIT_HOST:localhost}
-    port: ${RABBIT_PORT:5672}
-    username: ${RABBIT_USERNAME:guest}
-    password: ${RABBIT_PASSWORD:guest}
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
     listener:
       simple:
         default-requeue-rejected: false
