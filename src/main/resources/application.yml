@@ -11,6 +11,10 @@ spring:
     password: PROFILE
     driver-class-name: oracle.jdbc.OracleDriver
 
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/profile
+
   flyway:
     enabled: true
     baseline-on-migrate: false
