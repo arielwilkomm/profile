@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: profile
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+  datasource:
+    url: jdbc:oracle:thin:@//localdb:1521/xe
+    username: PROFILE
+    password: PROFILE
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USERNAME:guest}
+    password: ${RABBIT_PASSWORD:guest}
+    listener:
+      simple:
+        default-requeue-rejected: false
+        concurrency: 4
+        prefetch: 250
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+          multiplier: 2
+          max-interval: 5000
+
+  jpa:
+    open-in-view: false
+    
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      adjust-dates-to-context-time-zone: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: beans,env
