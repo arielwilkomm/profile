@@ -30,6 +30,7 @@
                         "class": "%logger{40}",
                         "flow": "%X{flow:-}",
                         "userId": "%X{userId:-}",
+                        "requestMethod": "%X{requestMethod:-}",
                         "requestStatus": "%X{requestStatus:-}",
                         "errorCategory": "%X{errorCategory:-}",
                         "errorType": "%X{errorType:-}",

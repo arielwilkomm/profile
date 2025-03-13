@@ -48,8 +48,8 @@ public class ProfileController {
             }
     )
     public ProfileRecord getProfile(@PathVariable("cpf") String cpf) {
-        log.info("Getting profile for customer: " + cpf);
-        return new ProfileRecord("12345678900", "John Doe", "john.doe@email.com", "55912345678");
+        log.info("getProfile - Getting profile");
+        return new ProfileRecord(cpf, "John Doe", "john.doe@email.com", "55912345678");
     }
 
     @PostMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -77,7 +77,7 @@ public class ProfileController {
             }
     )
     public ProfileRecord createProfile(@RequestBody @Valid ProfileRecord profileRecord) {
-        log.info("Creating profile for profile: " + profileRecord.cpf());
+        log.info("createProfile - Creating profile");
 
         return new ProfileRecord(
                 profileRecord.cpf(),
@@ -87,14 +87,4 @@ public class ProfileController {
         );
     }
 
-    private String[] extractFirstAndLastName(String name) {
-        Pattern pattern = Pattern.compile("^([\\w\\-]+)\\s([\\w\\-]+)$");
-        Matcher matcher = pattern.matcher(name);
-
-        if (matcher.matches()) {
-            return new String[]{matcher.group(1), matcher.group(2)};
-        } else {
-            return new String[]{name, ""};
-        }
-    }
 }
