@@ -1,5 +1,6 @@
 package com.profile.controller;
 
+import com.profile.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,19 +11,26 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import records.exceptions.ErrorResponseRecords;
 import records.profile.ProfileRecord;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/v1")
 @Tag(name = "Profile", description = "Profile administration")
 public class ProfileController {
+
+    private final ProfileService profileService;
+
+    @Autowired
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
+    }
 
     @GetMapping(value = "/profile/{cpf}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -48,9 +56,10 @@ public class ProfileController {
                     )
             }
     )
-    public ProfileRecord getProfile(@PathVariable("cpf") String cpf) {
+    public ResponseEntity<ProfileRecord> getProfile(@PathVariable("cpf") String cpf) {
         log.info("getProfile - Getting profile");
-        return new ProfileRecord(cpf, "John Doe", "john.doe@email.com", "55912345678");
+        ProfileRecord profile = profileService.getProfile(cpf);
+        return ResponseEntity.ok(profile);
     }
 
     @PostMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -77,16 +86,14 @@ public class ProfileController {
                     )
             }
     )
-    public ProfileRecord createProfile(@RequestBody @Valid ProfileRecord profileRecord) {
+    public ResponseEntity<ProfileRecord> createProfile(@RequestBody @Valid ProfileRecord profileRecord) {
         MDC.put("userId", StringUtils.isNotBlank(profileRecord.cpf()) ? profileRecord.cpf() : "Unknown");
+
         log.info("createProfile - Creating profile");
 
-        return new ProfileRecord(
-                profileRecord.cpf(),
-                profileRecord.name(),
-                profileRecord.email(),
-                profileRecord.phone()
-        );
+        ProfileRecord profile = profileService.createProfile(profileRecord);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(profile);
     }
 
 }

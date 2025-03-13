@@ -89,14 +89,4 @@ public class ProfileInterceptor implements HandlerInterceptor {
         Matcher matcher = pattern.matcher(uri);
         return matcher.find() ? matcher.group(1) : null;
     }
-
-    private String extractCpfFromBody(ContentCachingRequestWrapper request) throws IOException {
-        byte[] buf = request.getContentAsByteArray();
-        if (buf.length == 0) {
-            return null;
-        }
-        String requestBody = new String(buf, StandardCharsets.UTF_8);
-        Map<String, Object> body = objectMapper.readValue(requestBody, Map.class);
-        return body.get("cpf") != null ? body.get("cpf").toString() : null;
-    }
 }
