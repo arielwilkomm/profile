@@ -29,7 +29,9 @@ public class ProfileServiceImp implements ProfileService {
     private static final String PROFILE_NOT_FOUND ="Profile not found";
 
     @Autowired
-    public ProfileServiceImp(ProfileRepository profileRepository, AddressRepository addressRepository, AddressService addressService) {
+    public ProfileServiceImp(ProfileRepository profileRepository,
+                             AddressRepository addressRepository,
+                             AddressService addressService) {
         this.addressRepository = addressRepository;
         this.profileRepository = profileRepository;
         this.addressService = addressService;
@@ -85,7 +87,8 @@ public class ProfileServiceImp implements ProfileService {
             ProfileEntity existingProfile = profileRepository.findById(cpf)
                     .orElseThrow(() -> {
                         log.error(PROFILE_NOT_FOUND);
-                        return new ProfileException(ErrorType.PROFILE_NOT_FOUND, "Profile not found for CPF: " + cpf);
+                        return new ProfileException(ErrorType.PROFILE_NOT_FOUND,
+                                "Profile not found for CPF: " + cpf);
                     });
 
             ProfileEntity updatedProfile = profileMapper.toProfileEntity(profileRecord);
@@ -107,10 +110,12 @@ public class ProfileServiceImp implements ProfileService {
             return profileMapper.toProfileRecord(savedProfile);
         } catch (ProfileException e) {
             log.error("updateProfile - Unexpected error updating profile", e);
-            throw new ProfileException(ErrorType.JPA_EXCEPTION, "Unexpected error updating profile", e);
+            throw new ProfileException(ErrorType.JPA_EXCEPTION,
+                    "Unexpected error updating profile", e);
         } catch (Exception e) {
             log.error("updateProfile - Unexpected error updating profile", e);
-            throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error updating profile for CPF: " + cpf, e);
+            throw new ProfileException(ErrorType.INTERNAL_ERROR,
+                    "Unexpected error updating profile for CPF: " + cpf, e);
         }
     }
 
@@ -126,7 +131,8 @@ public class ProfileServiceImp implements ProfileService {
             log.info("deleteProfile - Profile deleted");
         } catch (Exception e) {
             log.error("deleteProfile - Unexpected error deleting profile", e);
-            throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error deleting profile for CPF: " + cpf, e);
+            throw new ProfileException(ErrorType.INTERNAL_ERROR,
+                    "Unexpected error deleting profile for CPF: " + cpf, e);
         }
     }
 }
