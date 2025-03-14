@@ -1,9 +1,15 @@
 package com.profile.records.address;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
+@Builder
+@Schema(description = "User's addresses", nullable = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record AddressRecord(
 
         @NotBlank(message = "Street name cannot be empty")

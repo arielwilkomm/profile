@@ -1,7 +1,10 @@
 package com.profile.service;
 
 import com.profile.entities.ProfileEntity;
+import com.profile.mappers.AddressMapper;
 import com.profile.mappers.ProfileMapper;
+import com.profile.records.address.AddressRecord;
+import com.profile.repositories.AddressRepository;
 import com.profile.repositories.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,17 +13,23 @@ import com.profile.exceptions.ProfileException;
 import com.profile.exceptions.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class ProfileServiceImp implements ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final AddressRepository addressRepository;
+    private static final AddressMapper addressMapper = AddressMapper.INSTANCE;
     private static final ProfileMapper profileMapper = ProfileMapper.INSTANCE;
 
     private static final String PROFILE_NOT_FOUND ="Profile not found";
 
     @Autowired
-    public ProfileServiceImp(ProfileRepository profileRepository) {
+    public ProfileServiceImp(ProfileRepository profileRepository, AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
         this.profileRepository = profileRepository;
     }
 
@@ -28,12 +37,16 @@ public class ProfileServiceImp implements ProfileService {
     public ProfileRecord getProfile(String cpf) {
         log.info("getProfile - Fetching profile");
         try {
-            return profileRepository.findById(cpf)
+            ProfileRecord profileRecord = profileRepository.findById(cpf)
                     .map(profileMapper::toProfileRecord)
                     .orElseThrow(() -> {
                         log.warn(PROFILE_NOT_FOUND);
                         return new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
                     });
+            List<AddressRecord> addresses = addressRepository.findAllByCpf(cpf).stream()
+                    .map(addressMapper::toAddressRecord)
+                    .collect(Collectors.toList());
+            return profileRecord.withAddresses(addresses);
         } catch (ProfileException e) {
             log.error("getProfile - Unexpected error fetching profile", e);
             throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
