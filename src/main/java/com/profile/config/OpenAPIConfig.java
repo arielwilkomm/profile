@@ -27,9 +27,6 @@ import org.springframework.context.annotation.Configuration;
                         url = "https://www.linkedin.com/in/ariel-wilkomm-6398b0161/"
                 )
         ),
-        tags = {
-                @Tag(name = "Profile", description = "Operations related to user profiles")
-        },
         security = @SecurityRequirement(name = "PassThrough"),
         servers = {
                 @Server(url = "localhost:8080/v1", description = "Production server")

@@ -18,7 +18,7 @@ import com.profile.records.profile.ProfileRecord;
 @Slf4j
 @RestController
 @RequestMapping(value = "/v1")
-@Tag(name = "Profile", description = "Profile administration")
+@Tag(name = "Profile", description = "Operations related to user profiles")
 public class ProfileController {
 
     private final ProfileService profileService;
