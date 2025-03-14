@@ -26,7 +26,7 @@ public class ProfileServiceImp implements ProfileService {
 
     @Override
     public ProfileRecord getProfile(String cpf) {
-        log.info("Fetching profile");
+        log.info("getProfile - Fetching profile");
         try {
             return profileRepository.findById(cpf)
                     .map(profileMapper::toProfileRecord)
@@ -35,29 +35,30 @@ public class ProfileServiceImp implements ProfileService {
                         return new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
                     });
         } catch (ProfileException e) {
+            log.error("getProfile - Unexpected error fetching profile", e);
             throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
         } catch (Exception e) {
-            log.error("Unexpected error fetching profile", e);
+            log.error("getProfile - Unexpected error fetching profile", e);
             throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error fetching profile", e);
         }
     }
 
     @Override
     public ProfileRecord createProfile(ProfileRecord profileRecord) {
-        log.info("Creating profile");
+        log.info("createProfile - Creating profile");
         try {
             ProfileEntity savedEntity = profileRepository.save(profileMapper.toProfileEntity(profileRecord));
-            log.info("Profile created");
+            log.info("createProfile - Profile created");
             return profileMapper.toProfileRecord(savedEntity);
         } catch (Exception e) {
-            log.error("Unexpected error creating profile", e);
+            log.error("createProfile - Unexpected error creating profile", e);
             throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error creating profile", e);
         }
     }
 
     @Override
     public ProfileRecord updateProfile(String cpf, ProfileRecord profileRecord) {
-        log.info("Updating profile");
+        log.info("updateProfile - Updating profile");
         try {
             ProfileEntity existingProfile = profileRepository.findById(cpf)
                     .orElseThrow(() -> {
@@ -69,24 +70,25 @@ public class ProfileServiceImp implements ProfileService {
             updatedProfile.setCpf(existingProfile.getCpf());
 
             ProfileEntity savedProfile = profileRepository.save(updatedProfile);
-            log.info("Profile updated");
+            log.info("updateProfile - Profile updated");
             return profileMapper.toProfileRecord(savedProfile);
         } catch (ProfileException e) {
+            log.error("updateProfile - Unexpected error updating profile", e);
             throw new ProfileException(ErrorType.JPA_EXCEPTION, "Unexpected error updating profile", e);
         } catch (Exception e) {
-            log.error("Unexpected error updating profile", e);
+            log.error("updateProfile - Unexpected error updating profile", e);
             throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error updating profile for CPF: " + cpf, e);
         }
     }
 
     @Override
     public void deleteProfile(String cpf) {
-        log.info("Deleting profile");
+        log.info("deleteProfile - Deleting profile");
         try {
             profileRepository.deleteById(cpf);
-            log.info("Profile deleted");
+            log.info("deleteProfile - Profile deleted");
         } catch (Exception e) {
-            log.error("Unexpected error deleting profile", e);
+            log.error("deleteProfile - Unexpected error deleting profile", e);
             throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error deleting profile for CPF: " + cpf, e);
         }
     }
