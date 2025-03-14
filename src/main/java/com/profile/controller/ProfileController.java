@@ -63,7 +63,6 @@ public class ProfileController {
             security = @SecurityRequirement(name = "PassThrough")
     )
     public ResponseEntity<ProfileRecord> updateProfile(@PathVariable("cpf") String cpf, @RequestBody @Valid ProfileRecord profileRecord) {
-        MDC.put("userId", StringUtils.isNotBlank(cpf) ? cpf : "Unknown");
         log.info("updateProfile - Updating profile");
         ProfileRecord updatedProfile = profileService.updateProfile(cpf, profileRecord);
         return ResponseEntity.ok(updatedProfile);
@@ -76,7 +75,6 @@ public class ProfileController {
             security = @SecurityRequirement(name = "PassThrough")
     )
     public ResponseEntity<Void> deleteProfile(@PathVariable("cpf") String cpf) {
-        MDC.put("userId", StringUtils.isNotBlank(cpf) ? cpf : "Unknown");
         log.info("deleteProfile - Deleting profile");
         profileService.deleteProfile(cpf);
         return ResponseEntity.noContent().build();
