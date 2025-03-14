@@ -18,3 +18,9 @@ Profile é uma aplicação desenvolvida em **Java 17** utilizando **Spring Boot*
 - **RabbitMQ**
 - **Flyway**
 - **JUnit para testes unitários**
+
+## Contato
+
+- **Nome:** Ariel Wilkomm
+- **E-mail:** [arielwilkomm@gmail.com](mailto:arielwilkomm@gmail.com)
+- **LinkedIn:** [Ariel Wilkomm](https://www.linkedin.com/in/ariel-wilkomm-6398b0161/)
