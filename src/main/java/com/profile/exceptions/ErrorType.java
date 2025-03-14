@@ -10,6 +10,7 @@ import static com.profile.constants.AppConstants.*;
 public enum ErrorType {
     //business
     PROFILE_NOT_FOUND(BUSINESS, "GB001", HttpStatus.NOT_FOUND, Level.ERROR),
+    CEP_NOT_FOUND(BUSINESS, "GB002", HttpStatus.NOT_FOUND, Level.ERROR),
 
     //internal
     INTERNAL_ERROR(INTERNAL, "GI001", HttpStatus.INTERNAL_SERVER_ERROR, Level.ERROR),
