@@ -11,6 +11,7 @@ public interface AddressMapper {
 
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
+    @Mapping(target = "id", source = "addressDocument.id")
     @Mapping(target = "street", source = "addressDocument.street")
     @Mapping(target = "city", source = "addressDocument.city")
     @Mapping(target = "state", source = "addressDocument.state")
@@ -19,6 +20,7 @@ public interface AddressMapper {
     @Mapping(target = "addressType", source = "addressDocument.addressType")
     AddressRecord toAddressRecord(AddressDocument addressDocument);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "cpf", source = "cpf")
     @Mapping(target = "street", source = "addressRecord.street")
     @Mapping(target = "city", source = "addressRecord.city")

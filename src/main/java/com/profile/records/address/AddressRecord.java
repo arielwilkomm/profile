@@ -12,6 +12,9 @@ import lombok.Builder;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record AddressRecord(
 
+        @Schema(description = "User's address ID", example = "adrs-123456")
+        String id,
+
         @NotBlank(message = "Street name cannot be empty")
         @Size(max = 255, message = "Street name must not exceed 255 characters")
         String street,

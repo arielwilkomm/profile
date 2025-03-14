@@ -69,11 +69,18 @@ public class ProfileServiceImp implements ProfileService {
 
             if (profileRecord.addresses() != null && !profileRecord.addresses().isEmpty()) {
                 for (AddressRecord address : profileRecord.addresses()) {
-                    addressService.createAddress(savedEntity.getCpf(), address);
+                    try {
+                        addressService.createAddress(savedEntity.getCpf(), address);
+                    } catch (Exception e) {
+                        log.error("createProfile - Error creating address", e);
+                    }
                 }
             }
 
             return profileMapper.toProfileRecord(savedEntity);
+        } catch (ProfileException e) {
+            log.error("createProfile - Profile creation failed", e);
+            throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error creating profile", e);
         } catch (Exception e) {
             log.error("createProfile - Unexpected error creating profile", e);
             throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error creating profile", e);
@@ -87,8 +94,7 @@ public class ProfileServiceImp implements ProfileService {
             ProfileEntity existingProfile = profileRepository.findById(cpf)
                     .orElseThrow(() -> {
                         log.error(PROFILE_NOT_FOUND);
-                        return new ProfileException(ErrorType.PROFILE_NOT_FOUND,
-                                "Profile not found for CPF: " + cpf);
+                        return new ProfileException(ErrorType.PROFILE_NOT_FOUND, "Profile not found for CPF: " + cpf);
                     });
 
             ProfileEntity updatedProfile = profileMapper.toProfileEntity(profileRecord);
@@ -103,19 +109,21 @@ public class ProfileServiceImp implements ProfileService {
                 );
 
                 for (AddressRecord address : profileRecord.addresses()) {
-                    addressService.createAddress(cpf, address);
+                    try {
+                        addressService.createAddress(cpf, address);
+                    } catch (Exception e) {
+                        log.error("updateProfile - Error creating address", e);
+                    }
                 }
             }
 
             return profileMapper.toProfileRecord(savedProfile);
         } catch (ProfileException e) {
-            log.error("updateProfile - Unexpected error updating profile", e);
-            throw new ProfileException(ErrorType.JPA_EXCEPTION,
-                    "Unexpected error updating profile", e);
+            log.error("updateProfile - Profile update failed", e);
+            throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error updating profile for CPF: " + cpf, e);
         } catch (Exception e) {
             log.error("updateProfile - Unexpected error updating profile", e);
-            throw new ProfileException(ErrorType.INTERNAL_ERROR,
-                    "Unexpected error updating profile for CPF: " + cpf, e);
+            throw new ProfileException(ErrorType.INTERNAL_ERROR, "Unexpected error updating profile for CPF: " + cpf, e);
         }
     }
 
