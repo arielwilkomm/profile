@@ -3,6 +3,11 @@ package com.profile.exceptions.handler;
 import com.profile.exceptions.ExceptionResponse;
 import com.profile.exceptions.ProfileException;
 import com.profile.exceptions.ErrorType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.slf4j.event.Level;
@@ -19,21 +24,26 @@ import static java.util.Optional.ofNullable;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final String BAD_REQUEST = "BAD_REQUEST";
     private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404",
+                    description = "Not Found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ExceptionResponse.class),
+                            examples = @ExampleObject(value = "{\n  \"code\": \"GB001\",\n  \"message\": \"PROFILE_NOT_FOUND\",\n  \"details\": [\"Profile not found\"]\n}")
+                    )),
+            @ApiResponse(responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ExceptionResponse.class),
+                            examples = @ExampleObject(value = "{\n  \"code\": \"GI001\",\n  \"message\": \"INTERNAL_SERVER_ERROR\",\n  \"details\": [\"Unexpected error occurred\"]\n}")
+                    ))
+    })
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
         var exceptionResponse = new ExceptionResponse("500", INTERNAL_SERVER_ERROR, ex.getMessage());
-        request.getDescription(false);
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
-        var exceptionResponse = new ExceptionResponse("400", BAD_REQUEST, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     @ExceptionHandler(ProfileException.class)
