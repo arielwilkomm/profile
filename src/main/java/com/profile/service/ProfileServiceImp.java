@@ -22,15 +22,17 @@ public class ProfileServiceImp implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final AddressRepository addressRepository;
+    private final AddressService addressService;
     private static final AddressMapper addressMapper = AddressMapper.INSTANCE;
     private static final ProfileMapper profileMapper = ProfileMapper.INSTANCE;
 
     private static final String PROFILE_NOT_FOUND ="Profile not found";
 
     @Autowired
-    public ProfileServiceImp(ProfileRepository profileRepository, AddressRepository addressRepository) {
+    public ProfileServiceImp(ProfileRepository profileRepository, AddressRepository addressRepository, AddressService addressService) {
         this.addressRepository = addressRepository;
         this.profileRepository = profileRepository;
+        this.addressService = addressService;
     }
 
     @Override
@@ -62,6 +64,13 @@ public class ProfileServiceImp implements ProfileService {
         try {
             ProfileEntity savedEntity = profileRepository.save(profileMapper.toProfileEntity(profileRecord));
             log.info("createProfile - Profile created");
+
+            if (profileRecord.addresses() != null && !profileRecord.addresses().isEmpty()) {
+                for (AddressRecord address : profileRecord.addresses()) {
+                    addressService.createAddress(savedEntity.getCpf(), address);
+                }
+            }
+
             return profileMapper.toProfileRecord(savedEntity);
         } catch (Exception e) {
             log.error("createProfile - Unexpected error creating profile", e);
@@ -84,6 +93,17 @@ public class ProfileServiceImp implements ProfileService {
 
             ProfileEntity savedProfile = profileRepository.save(updatedProfile);
             log.info("updateProfile - Profile updated");
+
+            if (profileRecord.addresses() != null) {
+                addressRepository.findAllByCpf(cpf).forEach(address ->
+                        addressService.deleteAddress(cpf, address.getId())
+                );
+
+                for (AddressRecord address : profileRecord.addresses()) {
+                    addressService.createAddress(cpf, address);
+                }
+            }
+
             return profileMapper.toProfileRecord(savedProfile);
         } catch (ProfileException e) {
             log.error("updateProfile - Unexpected error updating profile", e);
@@ -98,6 +118,10 @@ public class ProfileServiceImp implements ProfileService {
     public void deleteProfile(String cpf) {
         log.info("deleteProfile - Deleting profile");
         try {
+            addressRepository.findAllByCpf(cpf).forEach(address ->
+                    addressService.deleteAddress(cpf, address.getId())
+            );
+
             profileRepository.deleteById(cpf);
             log.info("deleteProfile - Profile deleted");
         } catch (Exception e) {
