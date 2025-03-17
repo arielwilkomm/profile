@@ -1,5 +1,9 @@
 package com.profile.constants;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Queues {
 
     private static final String PROFILE_PREFIX = "profile.";

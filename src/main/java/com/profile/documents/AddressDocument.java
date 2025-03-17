@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Random;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +30,7 @@ public class AddressDocument implements Serializable {
 
     @Id
     @Indexed
-    private String id = generateId();
+    private String id;
 
     @Indexed
     private String cpf;
@@ -42,8 +41,4 @@ public class AddressDocument implements Serializable {
     private String postalCode;
     private AddressType addressType;
 
-    private String generateId() {
-        int sequence = new Random().nextInt(99999) + 1;
-        return "adrs-" + (postalCode != null ? postalCode : "00000") + "-" + String.format("%05d", sequence);
-    }
 }

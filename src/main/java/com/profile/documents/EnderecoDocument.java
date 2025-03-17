@@ -44,19 +44,4 @@ public class EnderecoDocument implements Serializable {
     private String ddd;
     private String siafi;
 
-    public EnderecoDocument(EnderecoRecord enderecoRecord) {
-        this.cep = enderecoRecord.cep();
-        this.logradouro = enderecoRecord.logradouro();
-        this.complemento = enderecoRecord.complemento();
-        this.unidade = enderecoRecord.unidade();
-        this.bairro = enderecoRecord.bairro();
-        this.localidade = enderecoRecord.localidade();
-        this.uf = enderecoRecord.uf();
-        this.estado = enderecoRecord.estado();
-        this.regiao = enderecoRecord.regiao();
-        this.ibge = enderecoRecord.ibge();
-        this.gia = enderecoRecord.gia();
-        this.ddd = enderecoRecord.ddd();
-        this.siafi = enderecoRecord.siafi();
-    }
 }
