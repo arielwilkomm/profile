@@ -48,19 +48,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ProfileException.class)
     public ResponseEntity<Object> handleProfileException(ProfileException e) {
-        var message = e.getMessage();
-        ofNullable(e.getErrorType().getLevel()).ifPresent(level -> this.logMessage(level, message, e.getErrorType(), e));
+        MDC.put("requestStatus", "ERROR");
+        MDC.put("errorType", e.getErrorType().name());
+        MDC.put("errorCategory", "PROCESSING_ERROR");
+
+        log.atLevel(e.getErrorType().getLevel()).log("errorType: {} message: {}", e.getErrorType().getCode(), e.getMessage(), e);
 
         return ResponseEntity.status(e.getErrorType().getStatus())
-                .body(this.buildError(e.getErrorType(), message));
+                .body(this.buildError(e.getErrorType(), e.getMessage()));
     }
 
     private ExceptionResponse buildError(ErrorType errorType, String message) {
         return new ExceptionResponse(errorType.getCode(), errorType.name(), message);
-    }
-
-    private void logMessage(Level levelLog, String message, ErrorType errorType, ProfileException e) {
-        log.atLevel(levelLog).log("errorType: {} message: {}", errorType.getCode(), message, e);
-        MDC.clear();
     }
 }

@@ -52,15 +52,12 @@ public class ProfileInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        if (ex == null) {
-            MDC.put("requestStatus", "SUCCESS");
-            log.info("ProfileInterceptor - Processing completed successfully.");
-        } else {
+        if (ex != null) {
             MDC.put("requestStatus", "ERROR");
-            MDC.put("errorCategory", "PROCESSING_ERROR");
-            MDC.put("errorType", ex.getClass().getSimpleName());
-            log.error("ProfileInterceptor - Processing failed: {}", ex.getMessage());
+        } else if (!StringUtils.equals(MDC.get("requestStatus"), "ERROR")) {
+            MDC.put("requestStatus", "SUCCESS");
         }
+        log.info("ProfileInterceptor - Processing completed.");
         MDC.clear();
     }
 
