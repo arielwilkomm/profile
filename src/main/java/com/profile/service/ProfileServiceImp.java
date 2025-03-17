@@ -7,6 +7,8 @@ import com.profile.records.address.AddressRecord;
 import com.profile.repositories.AddressRepository;
 import com.profile.repositories.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import com.profile.records.profile.ProfileRecord;
 import com.profile.exceptions.ProfileException;
@@ -38,6 +40,7 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
+    @Cacheable(value = "profileCache", key = "#cpf")
     public ProfileRecord getProfile(String cpf) {
         log.info("getProfile - Fetching profile");
         try {
@@ -61,6 +64,7 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
+    @CacheEvict(value = "profileCache", key = "#cpf")
     public ProfileRecord createProfile(ProfileRecord profileRecord) {
         log.info("createProfile - Creating profile");
         try {
@@ -88,6 +92,7 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
+    @CacheEvict(value = "profileCache", key = "#cpf")
     public ProfileRecord updateProfile(String cpf, ProfileRecord profileRecord) {
         log.info("updateProfile - Updating profile");
         try {
@@ -128,6 +133,7 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
+    @CacheEvict(value = "profileCache", key = "#cpf")
     public void deleteProfile(String cpf) {
         log.info("deleteProfile - Deleting profile");
         try {

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -40,6 +41,7 @@ public class PostalCodeServiceImp implements PostalCodeService {
     }
 
     @Override
+    @Cacheable(value = "postalCodeCache", key = "#postalCode")
     public EnderecoRecord getAddressByPostalCode(String postalCode) {
         log.info("getAddressByPostalCode - Fetching address for postal code: {}", postalCode);
 

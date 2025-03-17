@@ -10,6 +10,8 @@ import com.profile.repositories.ProfileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -37,6 +39,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
+    @Cacheable(value = "addressCache", key = "#cpf + '-' + #addressId")
     public AddressRecord getAddressById(String cpf, String addressId) {
         log.info("getAddressById - Fetching address");
         AddressDocument addressDocument = mongoTemplate.findById(new ObjectId(addressId), AddressDocument.class);
@@ -48,6 +51,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
+    @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
     public AddressRecord createAddress(String cpf, AddressRecord addressRecord) {
         log.info("createAddress - Creating address");
         if (!profileRepository.existsById(cpf)) {
@@ -68,6 +72,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
+    @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
     public AddressRecord updateAddress(String cpf, String addressId, AddressRecord addressRecord) {
         log.info("updateAddress - Updating address");
 
@@ -85,6 +90,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
+    @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
     public void deleteAddress(String cpf, String addressId) {
         log.info("deleteAddress - Deleting address");
         Query query = new Query(Criteria.where("_id").is(new ObjectId(addressId)));
