@@ -17,10 +17,12 @@ import java.nio.charset.StandardCharsets;
 public class PostalCodeListener {
 
     private final PostalCodeService postalCodeService;
+    private final Util util;
 
     @Autowired
-    public PostalCodeListener(PostalCodeService postalCodeService) {
+    public PostalCodeListener(PostalCodeService postalCodeService, Util util) {
         this.postalCodeService = postalCodeService;
+        this.util = util;
     }
 
     @RabbitListener(queues = Queues.POSTALCODE_EVENT)
@@ -29,7 +31,7 @@ public class PostalCodeListener {
             String payload = new String(message.getBody(), StandardCharsets.UTF_8);
             log.info("postalCodeEvents - start - payload: {}", payload);
 
-            EnderecoRecord response = (EnderecoRecord) Util.parseStringToObject(payload, EnderecoRecord.class);
+            EnderecoRecord response = util.parseStringToObject(payload, EnderecoRecord.class);
             postalCodeService.saveEnderecoDocument(response);
 
             log.debug("postalCodeEvents - end - payload: {}", payload);

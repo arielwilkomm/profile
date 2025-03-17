@@ -29,12 +29,14 @@ public class PostalCodeServiceImp implements PostalCodeService {
     private final ViaCepClient viaCepClient;
     private final MongoTemplate mongoTemplate;
     private final PostalCodePublisher postalCodePublisher;
+    private final Util util;
 
     @Autowired
-    public PostalCodeServiceImp(ViaCepClient viaCepClient, MongoTemplate mongoTemplate, PostalCodePublisher postalCodePublisher) {
+    public PostalCodeServiceImp(ViaCepClient viaCepClient, MongoTemplate mongoTemplate, PostalCodePublisher postalCodePublisher, Util util) {
         this.viaCepClient = viaCepClient;
         this.mongoTemplate = mongoTemplate;
         this.postalCodePublisher = postalCodePublisher;
+        this.util = util;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class PostalCodeServiceImp implements PostalCodeService {
         ResponseEntity<EnderecoRecord> response = viaCepClient.getEnderecoRecord(postalCode);
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            String parseMessage = Util.parseObjectToJson(response.getBody());
+            String parseMessage = util.parseObjectToJson(response.getBody());
             Message message = MessageBuilder.withBody(parseMessage.getBytes(StandardCharsets.UTF_8)).build();
             postalCodePublisher.publish(message, RoutingKeys.POSTALCODE_COMPLETED);
             return response.getBody();

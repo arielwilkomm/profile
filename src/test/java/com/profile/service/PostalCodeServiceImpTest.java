@@ -6,6 +6,7 @@ import com.profile.documents.EnderecoDocument;
 import com.profile.exceptions.ProfileException;
 import com.profile.publishers.PostalCodePublisher;
 import com.profile.records.viacep.EnderecoRecord;
+import com.profile.utils.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PostalCodeServiceTest {
+class PostalCodeServiceImpTest {
 
     @Mock
     private ViaCepClient viaCepClient;
@@ -33,6 +34,9 @@ class PostalCodeServiceTest {
 
     @Mock
     private PostalCodePublisher postalCodePublisher;
+
+    @Mock
+    private Util util;
 
     @InjectMocks
     private PostalCodeServiceImp postalCodeService;
@@ -48,6 +52,7 @@ class PostalCodeServiceTest {
     @Test
     void testGetAddressByPostalCode_Success() {
         when(viaCepClient.getEnderecoRecord("12345678")).thenReturn(new ResponseEntity<>(enderecoRecord, HttpStatus.OK));
+        when(util.parseObjectToJson(enderecoRecord)).thenReturn("{\"cep\":\"12345678\"}");
 
         EnderecoRecord result = postalCodeService.getAddressByPostalCode("12345678");
 
