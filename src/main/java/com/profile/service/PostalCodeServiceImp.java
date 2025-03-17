@@ -2,23 +2,23 @@ package com.profile.service;
 
 import com.profile.clients.ViaCepClient;
 import com.profile.constants.RoutingKeys;
+import com.profile.documents.EnderecoDocument;
+import com.profile.exceptions.ErrorType;
+import com.profile.exceptions.ProfileException;
 import com.profile.publishers.PostalCodePublisher;
 import com.profile.records.viacep.EnderecoRecord;
-import com.profile.documents.EnderecoDocument;
-import com.profile.exceptions.ProfileException;
-import com.profile.exceptions.ErrorType;
 import com.profile.utils.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;

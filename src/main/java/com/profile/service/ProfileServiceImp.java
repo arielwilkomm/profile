@@ -1,19 +1,19 @@
 package com.profile.service;
 
 import com.profile.entities.ProfileEntity;
+import com.profile.exceptions.ErrorType;
+import com.profile.exceptions.ProfileException;
 import com.profile.mappers.AddressMapper;
 import com.profile.mappers.ProfileMapper;
 import com.profile.records.address.AddressRecord;
+import com.profile.records.profile.ProfileRecord;
 import com.profile.repositories.AddressRepository;
 import com.profile.repositories.ProfileRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import com.profile.records.profile.ProfileRecord;
-import com.profile.exceptions.ProfileException;
-import com.profile.exceptions.ErrorType;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.stream.Collectors;

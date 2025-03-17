@@ -1,18 +1,18 @@
 package com.profile.exceptions.handler;
 
+import com.profile.exceptions.ErrorType;
 import com.profile.exceptions.ExceptionResponse;
 import com.profile.exceptions.ProfileException;
-import com.profile.exceptions.ErrorType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 class RestExceptionHandlerTest {
 

@@ -1,11 +1,11 @@
 package com.profile.mappers;
 
 import com.profile.entities.ProfileEntity;
+import com.profile.records.profile.ProfileRecord;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
-import com.profile.records.profile.ProfileRecord;
 
 @Mapper
 public interface ProfileMapper {

@@ -2,7 +2,6 @@ package com.profile.publishers;
 
 import com.profile.constants.Exchanges;
 import com.profile.constants.RoutingKeys;
-import com.profile.records.address.AddressRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

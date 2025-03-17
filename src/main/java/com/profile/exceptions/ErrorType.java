@@ -4,7 +4,8 @@ import lombok.Getter;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
-import static com.profile.constants.AppConstants.*;
+import static com.profile.constants.AppConstants.BUSINESS;
+import static com.profile.constants.AppConstants.INTERNAL;
 
 @Getter
 public enum ErrorType {

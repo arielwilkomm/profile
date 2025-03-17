@@ -1,8 +1,8 @@
 package com.profile.exceptions.handler;
 
+import com.profile.exceptions.ErrorType;
 import com.profile.exceptions.ExceptionResponse;
 import com.profile.exceptions.ProfileException;
-import com.profile.exceptions.ErrorType;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,15 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 @ControllerAdvice

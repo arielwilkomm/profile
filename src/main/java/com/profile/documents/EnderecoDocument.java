@@ -1,6 +1,5 @@
 package com.profile.documents;
 
-import com.profile.records.viacep.EnderecoRecord;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

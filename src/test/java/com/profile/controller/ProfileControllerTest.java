@@ -1,7 +1,7 @@
 package com.profile.controller;
 
-import com.profile.records.profile.ProfileRecord;
 import com.profile.records.address.AddressRecord;
+import com.profile.records.profile.ProfileRecord;
 import com.profile.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
