@@ -6,6 +6,7 @@ Profile é uma aplicação desenvolvida em **Java 17** utilizando **Spring Boot*
 
 ## Estrutura da Documentação
 
+- [Descrição do Negócio](LOGICA_DE_NEGOCIO.md)
 - [Configuração e Instalação](CONFIGURACAO.md)
 - [Documentação das Dependências](DEPENDENCIAS.md)
 
