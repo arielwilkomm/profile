@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 @Component
 public class ProfileInterceptor implements HandlerInterceptor {
     private static final Logger log = LoggerFactory.getLogger(ProfileInterceptor.class);
+    private static final String REQUEST_STATUS = "requestStatus";
+    private static final String ERROR = "ERROR";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -27,7 +29,7 @@ public class ProfileInterceptor implements HandlerInterceptor {
             }
 
             MDC.put("requestMethod", request.getMethod());
-            MDC.put("requestStatus", "IN_PROGRESS");
+            MDC.put(REQUEST_STATUS, "IN_PROGRESS");
 
             String cpf = null;
             if (StringUtils.equalsAnyIgnoreCase(request.getMethod(), "GET", "DELETE", "PUT")) {
@@ -41,7 +43,7 @@ public class ProfileInterceptor implements HandlerInterceptor {
 
             return true;
         } catch (Exception e) {
-            MDC.put("requestStatus", "ERROR");
+            MDC.put(REQUEST_STATUS, ERROR);
             MDC.put("errorCategory", "PROCESSING_ERROR");
             MDC.put("errorType", e.getClass().getSimpleName());
             log.error("ProfileInterceptor - Error processing request: {}", e.getMessage());
@@ -52,8 +54,8 @@ public class ProfileInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         if (ex != null) {
-            MDC.put("requestStatus", "ERROR");
-        } else if (!StringUtils.equals(MDC.get("requestStatus"), "ERROR")) {
+            MDC.put(REQUEST_STATUS, ERROR);
+        } else if (!StringUtils.equals(MDC.get(REQUEST_STATUS), ERROR)) {
             MDC.put("requestStatus", "SUCCESS");
         }
         log.info("ProfileInterceptor - Processing completed.");
@@ -61,14 +63,11 @@ public class ProfileInterceptor implements HandlerInterceptor {
     }
 
     private String getMethodName(String methodName) {
-        switch (methodName) {
-            case "getProfile":
-                return "GET_PROFILE";
-            case "createProfile":
-                return "CREATE_PROFILE";
-            default:
-                return methodName;
-        }
+        return switch (methodName) {
+            case "getProfile" -> "GET_PROFILE";
+            case "createProfile" -> "CREATE_PROFILE";
+            default -> methodName;
+        };
     }
 
     private String extractCpfFromUrl(String uri) {

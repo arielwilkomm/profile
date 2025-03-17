@@ -41,7 +41,7 @@ class ProfileControllerTest {
 
         ResponseEntity<ProfileRecord> response = profileController.getProfile(cpf);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(profileRecord, response.getBody());
     }
 
@@ -51,7 +51,7 @@ class ProfileControllerTest {
 
         ResponseEntity<ProfileRecord> response = profileController.createProfile(profileRecord);
 
-        assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(profileRecord, response.getBody());
     }
 
@@ -62,7 +62,7 @@ class ProfileControllerTest {
 
         ResponseEntity<ProfileRecord> response = profileController.updateProfile(cpf, profileRecord);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(profileRecord, response.getBody());
     }
 
@@ -73,7 +73,7 @@ class ProfileControllerTest {
 
         ResponseEntity<Void> response = profileController.deleteProfile(cpf);
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCodeValue());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         verify(profileService, times(1)).deleteProfile(cpf);
     }
 }

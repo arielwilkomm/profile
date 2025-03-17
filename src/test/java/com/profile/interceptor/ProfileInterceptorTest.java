@@ -35,7 +35,7 @@ class ProfileInterceptorTest {
     void testPreHandle_Success() throws Exception {
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("/profile/12345678900");
-        when(handlerMethod.getMethod()).thenReturn(ProfileInterceptorTest.class.getDeclaredMethod("dummyMethod"));
+        when(handlerMethod.getMethod()).thenReturn(ProfileInterceptorTest.class.getDeclaredMethod("testPreHandle_Exception"));
 
         boolean result = interceptor.preHandle(request, response, handlerMethod);
 
@@ -54,5 +54,4 @@ class ProfileInterceptorTest {
         assertEquals("ERROR", MDC.get("requestStatus"));
     }
 
-    void dummyMethod() {}
 }

@@ -86,7 +86,7 @@ public class AddressServiceImp implements AddressService {
         Update update = getUpdateAddressDocument(cpf, addressRecord);
         mongoTemplate.upsert(query, update, AddressDocument.class);
         log.info("updateAddress - Address updated");
-        return getAddressById(cpf, addressId);
+        return addressRecord;
     }
 
     @Override

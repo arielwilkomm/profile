@@ -65,11 +65,11 @@ class PostalCodePublisherTest {
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setContentType("text/plain");
 
-        Message message = new Message(messageContent.getBytes(), messageProperties);
+        Message messages = new Message(messageContent.getBytes(), messageProperties);
 
         postalCodePublisher.publish(message, routingKey);
 
-        verify(rabbitTemplate, times(1)).convertAndSend(Exchanges.PROFILE_EVENTS, routingKey, message);
+        verify(rabbitTemplate, times(1)).convertAndSend(Exchanges.PROFILE_EVENTS, routingKey, messages);
     }
 
     @Test
