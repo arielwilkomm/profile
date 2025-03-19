@@ -1,9 +1,5 @@
 fullnameOverride: profile
 
-service:
-  type: ClusterIP
-  port: 80
-
 k8sProbes:
   enable: true
   livenessProbe:
