@@ -15,7 +15,7 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:oracle:thin:@//localdb:1521/xe
+    url: jdbc:oracle:thin:@//localhost:1521/xe
     username: PROFILE
     password: PROFILE
     driver-class-name: oracle.jdbc.OracleDriver
