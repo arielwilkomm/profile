@@ -61,6 +61,7 @@ class AddressServiceImpTest {
 
     @Test
     void testGetAddressByIdSuccess() {
+        when(profileRepository.existsById("12345678900")).thenReturn(true);
         when(mongoTemplate.findById(new ObjectId("67d488e635ede47c5cc0b37e"), AddressDocument.class)).thenReturn(addressDocument);
 
         AddressRecord result = addressService.getAddressById("12345678900", "67d488e635ede47c5cc0b37e");
@@ -73,6 +74,7 @@ class AddressServiceImpTest {
 
     @Test
     void testGetAddressByIdAddressNotFound() {
+        when(profileRepository.existsById("12345678900")).thenReturn(true);
         when(mongoTemplate.findById(new ObjectId("67d488e635ede47c5cc0b37e"), AddressDocument.class)).thenReturn(null);
 
         ProfileException exception = assertThrows(ProfileException.class, () -> {
@@ -120,9 +122,10 @@ class AddressServiceImpTest {
 
     @Test
     void testUpdateAddressSuccess() {
+        when(profileRepository.existsById("12345678900")).thenReturn(true);
+        when(mongoTemplate.exists(any(), eq(AddressDocument.class))).thenReturn(true);
         when(enderecoRepository.findByCep("12345-678")).thenReturn(java.util.Optional.of(new EnderecoDocument()));
         when(mongoTemplate.upsert(any(), any(Update.class), eq(AddressDocument.class))).thenReturn(null);
-        when(mongoTemplate.findById(new ObjectId("67d488e635ede47c5cc0b37e"), AddressDocument.class)).thenReturn(addressDocument);
 
         AddressRecord result = addressService.updateAddress("12345678900", "67d488e635ede47c5cc0b37e", addressRecord);
 
@@ -132,6 +135,8 @@ class AddressServiceImpTest {
 
     @Test
     void testUpdateAddressCepNotFound() {
+        when(profileRepository.existsById("12345678900")).thenReturn(true);
+        when(mongoTemplate.exists(any(), eq(AddressDocument.class))).thenReturn(true);
         when(enderecoRepository.findByCep("12345-678")).thenReturn(java.util.Optional.empty());
 
         ProfileException exception = assertThrows(ProfileException.class, () -> {
@@ -143,6 +148,7 @@ class AddressServiceImpTest {
 
     @Test
     void testDeleteAddressSuccess() {
+        when(profileRepository.existsById("12345678900")).thenReturn(true);
         when(mongoTemplate.findOne(any(), eq(AddressDocument.class))).thenReturn(addressDocument);
 
         assertDoesNotThrow(() -> addressService.deleteAddress("12345678900", "67d488e635ede47c5cc0b37e"));
@@ -150,6 +156,7 @@ class AddressServiceImpTest {
 
     @Test
     void testDeleteAddressAddressNotFound() {
+        when(profileRepository.existsById("12345678900")).thenReturn(true);
         when(mongoTemplate.findOne(any(), eq(AddressDocument.class))).thenReturn(null);
 
         ProfileException exception = assertThrows(ProfileException.class, () -> {

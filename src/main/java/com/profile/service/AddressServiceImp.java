@@ -42,10 +42,14 @@ public class AddressServiceImp implements AddressService {
     @Cacheable(value = "addressCache", key = "#cpf + '-' + #addressId")
     public AddressRecord getAddressById(String cpf, String addressId) {
         log.info("getAddressById - Fetching address");
+        if (!profileRepository.existsById(cpf)) {
+            log.warn("getAddressById - ".concat(PROFILE_NOT_FOUND));
+            throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
+        }
         AddressDocument addressDocument = mongoTemplate.findById(new ObjectId(addressId), AddressDocument.class);
         if (addressDocument == null) {
-            log.warn("getAddressById - Address not found");
-            throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, ADDRESS_NOT_FOUND);
+            log.warn("getAddressById - ".concat(ADDRESS_NOT_FOUND));
+            throw new ProfileException(ErrorType.ADDRESS_NOT_FOUND, ADDRESS_NOT_FOUND);
         }
         return addressMapper.toAddressRecord(addressDocument);
     }
@@ -55,7 +59,7 @@ public class AddressServiceImp implements AddressService {
     public AddressRecord createAddress(String cpf, AddressRecord addressRecord) {
         log.info("createAddress - Creating address");
         if (!profileRepository.existsById(cpf)) {
-            log.warn(PROFILE_NOT_FOUND);
+            log.warn("createAddress - ".concat(PROFILE_NOT_FOUND));
             throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
         }
 
@@ -76,6 +80,16 @@ public class AddressServiceImp implements AddressService {
     public AddressRecord updateAddress(String cpf, String addressId, AddressRecord addressRecord) {
         log.info("updateAddress - Updating address");
 
+        if (!profileRepository.existsById(cpf)) {
+            log.warn("updateAddress - ".concat(PROFILE_NOT_FOUND));
+            throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
+        }
+
+        if (!mongoTemplate.exists(new Query(Criteria.where("_id").is(new ObjectId(addressId))), AddressDocument.class)) {
+            log.warn("updateAddress - ".concat(ADDRESS_NOT_FOUND));
+            throw new ProfileException(ErrorType.ADDRESS_NOT_FOUND, ADDRESS_NOT_FOUND);
+        }
+
         enderecoRepository.findByCep(addressRecord.postalCode())
                 .orElseThrow(() -> {
                     log.warn("updateAddress - CEP not found: {}", addressRecord.postalCode());
@@ -93,9 +107,18 @@ public class AddressServiceImp implements AddressService {
     @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
     public void deleteAddress(String cpf, String addressId) {
         log.info("deleteAddress - Deleting address");
+        if (!profileRepository.existsById(cpf)) {
+            log.warn("deleteAddress -".concat(PROFILE_NOT_FOUND));
+            throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
+        }
+        if (addressId == null || addressId.isEmpty()) {
+            log.warn("deleteAddress - Address ID is null or empty");
+            throw new ProfileException(ErrorType.ADDRESS_NOT_FOUND, "Address ID cannot be null or empty");
+        }
+
         Query query = new Query(Criteria.where("_id").is(new ObjectId(addressId)));
         if (mongoTemplate.findOne(query, AddressDocument.class) == null) {
-            log.warn(ADDRESS_NOT_FOUND);
+            log.warn("deleteAddress -".concat(ADDRESS_NOT_FOUND));
             throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, ADDRESS_NOT_FOUND);
         }
         mongoTemplate.remove(query, AddressDocument.class);
