@@ -5,7 +5,6 @@ import com.profile.documents.EnderecoDocument;
 import com.profile.exceptions.ErrorType;
 import com.profile.exceptions.ProfileException;
 import com.profile.records.address.AddressRecord;
-import com.profile.records.viacep.EnderecoRecord;
 import com.profile.repositories.EnderecoRepository;
 import com.profile.repositories.ProfileRepository;
 import org.bson.types.ObjectId;
@@ -54,7 +53,7 @@ class AddressServiceImpTest {
                 .state("Estado Exemplo")
                 .country("País Exemplo")
                 .postalCode("12345-678")
-                .addressType(AddressRecord.AddressType.RESIDENCIAL)
+                .addressType(AddressRecord.AddressType.RESIDENTIAL)
                 .build();
 
         addressDocument = new AddressDocument();
@@ -63,7 +62,7 @@ class AddressServiceImpTest {
         addressDocument.setState("Estado Exemplo");
         addressDocument.setCountry("País Exemplo");
         addressDocument.setPostalCode("12345-678");
-        addressDocument.setAddressType(AddressRecord.AddressType.RESIDENCIAL);
+        addressDocument.setAddressType(AddressRecord.AddressType.RESIDENTIAL);
     }
 
     void getAllAddressesReturnsListWhenCpfExists() {
@@ -75,7 +74,7 @@ class AddressServiceImpTest {
                         .state("Estado Exemplo")
                         .country("País Exemplo")
                         .postalCode("12345-678")
-                        .addressType(AddressRecord.AddressType.RESIDENCIAL)
+                        .addressType(AddressRecord.AddressType.RESIDENTIAL)
                         .build(),
                 AddressDocument.builder()
                         .street("Rua Teste")
@@ -83,7 +82,7 @@ class AddressServiceImpTest {
                         .state("Estado Teste")
                         .country("País Teste")
                         .postalCode("98765-432")
-                        .addressType(AddressRecord.AddressType.COMERCIAL)
+                        .addressType(AddressRecord.AddressType.COMMERCIAL)
                         .build()
         );
         when(profileRepository.existsById(cpf)).thenReturn(true);

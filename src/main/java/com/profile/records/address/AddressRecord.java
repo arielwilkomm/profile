@@ -40,7 +40,7 @@ public record AddressRecord(
 ) {
 
     public enum AddressType {
-        RESIDENCIAL,
-        COMERCIAL
+        RESIDENTIAL,
+        COMMERCIAL
     }
 }
