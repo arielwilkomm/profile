@@ -32,5 +32,4 @@ public interface AddressMapper {
     @Mapping(target = "addressType", source = "addressRecord.addressType")
     AddressDocument toAddressDocument(String cpf, AddressRecord addressRecord);
 
-    List<AddressRecord> toAddressRecordList(List<AddressDocument> addressDocuments);
 }

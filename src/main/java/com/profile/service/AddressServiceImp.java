@@ -60,7 +60,7 @@ public class AddressServiceImp implements AddressService {
             return new ArrayList<>();
         }
 
-        return addressMapper.toAddressRecordList(addressDocuments);
+        return addressDocuments.stream().map(addressMapper::toAddressRecord).toList();
     }
 
     @Override
