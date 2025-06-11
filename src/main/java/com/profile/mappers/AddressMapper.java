@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface AddressMapper {
 
@@ -29,4 +31,6 @@ public interface AddressMapper {
     @Mapping(target = "postalCode", source = "addressRecord.postalCode")
     @Mapping(target = "addressType", source = "addressRecord.addressType")
     AddressDocument toAddressDocument(String cpf, AddressRecord addressRecord);
+
+    List<AddressRecord> toAddressRecordList(List<AddressDocument> addressDocuments);
 }

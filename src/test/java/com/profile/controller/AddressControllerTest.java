@@ -1,5 +1,7 @@
 package com.profile.controller;
 
+import com.profile.exceptions.ErrorType;
+import com.profile.exceptions.ProfileException;
 import com.profile.records.address.AddressRecord;
 import com.profile.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +32,43 @@ class AddressControllerTest {
     @BeforeEach
     void setUp() {
         addressRecord = new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENTIAL);
+    }
+
+    @Test
+    void getAllAddressReturnsAddressesWhenCpfExists() {
+        String cpf = "12345678900";
+        List<AddressRecord> addressRecords = List.of(
+            new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENTIAL),
+            new AddressRecord("adrs-789012", "Rua Teste", "Cidade Teste", "Estado Teste", "País Teste", "98765-432", AddressRecord.AddressType.COMMERCIAL)
+        );
+        when(addressService.getAllAddresses(cpf)).thenReturn(addressRecords);
+
+        ResponseEntity<List<AddressRecord>> response = addressController.getAllAddress(cpf);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(addressRecords, response.getBody());
+    }
+
+    @Test
+    void getAllAddressThrowsExceptionWhenCpfDoesNotExist() {
+        String cpf = "invalidCpf";
+        when(addressService.getAllAddresses(cpf)).thenThrow(new ProfileException(ErrorType.PROFILE_NOT_FOUND, "Profile not found"));
+
+        ProfileException exception = assertThrows(ProfileException.class, () -> addressController.getAllAddress(cpf));
+
+        assertEquals(ErrorType.PROFILE_NOT_FOUND, exception.getErrorType());
+        assertEquals("Profile not found", exception.getMessage());
+    }
+
+    @Test
+    void getAllAddressReturnsEmptyListWhenNoAddressesFound() {
+        String cpf = "12345678900";
+        when(addressService.getAllAddresses(cpf)).thenReturn(List.of());
+
+        ResponseEntity<List<AddressRecord>> response = addressController.getAllAddress(cpf);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertTrue(response.getBody().isEmpty());
     }
 
     @Test

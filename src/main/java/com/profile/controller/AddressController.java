@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/v1/profile/{cpf}")
@@ -26,6 +28,18 @@ public class AddressController {
     @Autowired
     public AddressController(AddressService addressService) {
         this.addressService = addressService;
+    }
+
+    @GetMapping(value = "/address", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "Get address",
+            description = "Retrieve address information by CPF and Address ID",
+            security = @SecurityRequirement(name = "PassThrough")
+    )
+    public ResponseEntity<List<AddressRecord>> getAllAddress(@PathVariable("cpf") String cpf) {
+        log.info("getAddress - Getting address");
+        List<AddressRecord> address = addressService.getAllAddresses(cpf);
+        return ResponseEntity.ok(address);
     }
 
     @GetMapping(value = "/address/{addressId}", produces = MediaType.APPLICATION_JSON_VALUE)

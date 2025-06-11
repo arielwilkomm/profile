@@ -67,7 +67,7 @@ class PostalCodePublisherTest {
 
         Message messages = new Message(messageContent.getBytes(), messageProperties);
 
-        postalCodePublisher.publish(message, routingKey);
+        postalCodePublisher.publish(messages, routingKey);
 
         verify(rabbitTemplate, times(1)).convertAndSend(Exchanges.PROFILE_EVENTS, routingKey, messages);
     }

@@ -18,6 +18,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service
 public class AddressServiceImp implements AddressService {
@@ -36,6 +39,24 @@ public class AddressServiceImp implements AddressService {
         this.mongoTemplate = mongoTemplate;
         this.profileRepository = profileRepository;
         this.enderecoRepository = enderecoRepository;
+    }
+
+    @Override
+    @Cacheable(value = "addressCache", key = "#cpf")
+    public List<AddressRecord> getAllAddresses(String cpf) {
+        log.info("getAllAddresses - Buscando todos os endereços do usuário");
+        if (!profileRepository.existsById(cpf)) {
+            log.warn("getAllAddresses - ".concat(PROFILE_NOT_FOUND));
+            throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
+        }
+        Query query = new Query(Criteria.where("cpf").is(cpf));
+        List<AddressDocument> addressDocuments = mongoTemplate.find(query, AddressDocument.class);
+        if (addressDocuments.isEmpty()) {
+            log.warn("getAllAddresses - ".concat(ADDRESS_NOT_FOUND));
+            return new ArrayList<>();
+        }
+
+        return addressMapper.toAddressRecordList(addressDocuments);
     }
 
     @Override

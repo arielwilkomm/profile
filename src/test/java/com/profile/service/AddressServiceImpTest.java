@@ -15,7 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -59,6 +62,58 @@ class AddressServiceImpTest {
         addressDocument.setAddressType(AddressRecord.AddressType.RESIDENTIAL);
     }
 
+    void getAllAddressesReturnsListWhenCpfExists() {
+        String cpf = "12345678900";
+        List<AddressDocument> addressDocuments = List.of(
+                AddressDocument.builder()
+                        .street("Rua Exemplo")
+                        .city("Cidade Exemplo")
+                        .state("Estado Exemplo")
+                        .country("País Exemplo")
+                        .postalCode("12345-678")
+                        .addressType(AddressRecord.AddressType.RESIDENTIAL)
+                        .build(),
+                AddressDocument.builder()
+                        .street("Rua Teste")
+                        .city("Cidade Teste")
+                        .state("Estado Teste")
+                        .country("País Teste")
+                        .postalCode("98765-432")
+                        .addressType(AddressRecord.AddressType.COMMERCIAL)
+                        .build()
+        );
+        when(profileRepository.existsById(cpf)).thenReturn(true);
+        when(mongoTemplate.find(any(Query.class), eq(AddressDocument.class))).thenReturn(addressDocuments);
+
+        List<AddressRecord> result = addressService.getAllAddresses(cpf);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Rua Exemplo", result.get(0).street());
+        assertEquals("Rua Teste", result.get(1).street());
+    }
+
+    void getAllAddressesThrowsExceptionWhenCpfDoesNotExist() {
+        String cpf = "invalidCpf";
+        when(profileRepository.existsById(cpf)).thenReturn(false);
+
+        ProfileException exception = assertThrows(ProfileException.class, () -> addressService.getAllAddresses(cpf));
+
+        assertEquals(ErrorType.PROFILE_NOT_FOUND, exception.getErrorType());
+        assertEquals("Profile not found", exception.getMessage());
+    }
+
+    void getAllAddressesReturnsEmptyListWhenNoAddressesFound() {
+        String cpf = "12345678900";
+        when(profileRepository.existsById(cpf)).thenReturn(true);
+        when(mongoTemplate.find(any(Query.class), eq(AddressDocument.class))).thenReturn(List.of());
+
+        List<AddressRecord> result = addressService.getAllAddresses(cpf);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
     @Test
     void testGetAddressByIdSuccess() {
         when(profileRepository.existsById("12345678900")).thenReturn(true);
@@ -81,7 +136,7 @@ class AddressServiceImpTest {
             addressService.getAddressById("12345678900", "67d488e635ede47c5cc0b37e");
         });
 
-        assertEquals(ErrorType.PROFILE_NOT_FOUND, exception.getErrorType());
+        assertEquals(ErrorType.ADDRESS_NOT_FOUND, exception.getErrorType());
     }
 
     @Test

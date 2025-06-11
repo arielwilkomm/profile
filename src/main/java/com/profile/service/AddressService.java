@@ -2,7 +2,11 @@ package com.profile.service;
 
 import com.profile.records.address.AddressRecord;
 
+import java.util.List;
+
 public interface AddressService {
+
+    List<AddressRecord> getAllAddresses(String cpf);
 
     AddressRecord getAddressById(String cpf, String addressId);
 
