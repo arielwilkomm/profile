@@ -6,20 +6,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 @Mapper
 public interface AddressMapper {
 
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
-    @Mapping(target = "id", source = "addressDocument.id")
-    @Mapping(target = "street", source = "addressDocument.street")
-    @Mapping(target = "city", source = "addressDocument.city")
-    @Mapping(target = "state", source = "addressDocument.state")
-    @Mapping(target = "country", source = "addressDocument.country")
-    @Mapping(target = "postalCode", source = "addressDocument.postalCode")
-    @Mapping(target = "addressType", source = "addressDocument.addressType")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "street", source = "street")
+    @Mapping(target = "city", source = "city")
+    @Mapping(target = "state", source = "state")
+    @Mapping(target = "country", source = "country")
+    @Mapping(target = "postalCode", source = "postalCode")
+    @Mapping(target = "addressType", source = "addressType")
     AddressRecord toAddressRecord(AddressDocument addressDocument);
 
     @Mapping(target = "id", ignore = true)
