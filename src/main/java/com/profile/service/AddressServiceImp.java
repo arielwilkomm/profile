@@ -5,6 +5,7 @@ import com.profile.exceptions.ErrorType;
 import com.profile.exceptions.ProfileException;
 import com.profile.mappers.AddressMapper;
 import com.profile.records.address.AddressRecord;
+import com.profile.records.viacep.EnderecoRecord;
 import com.profile.repositories.EnderecoRepository;
 import com.profile.repositories.ProfileRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class AddressServiceImp implements AddressService {
     private final MongoTemplate mongoTemplate;
     private final ProfileRepository profileRepository;
     private final EnderecoRepository enderecoRepository;
+    private final PostalCodeService postalCodeService;
     private static final AddressMapper addressMapper = AddressMapper.INSTANCE;
     private static final String PROFILE_NOT_FOUND = "Profile not found";
     private static final String ADDRESS_NOT_FOUND = "Address not found";
@@ -35,10 +37,12 @@ public class AddressServiceImp implements AddressService {
     @Autowired
     public AddressServiceImp(MongoTemplate mongoTemplate,
                              ProfileRepository profileRepository,
-                             EnderecoRepository enderecoRepository) {
+                             EnderecoRepository enderecoRepository,
+                             PostalCodeService postalCodeService) {
         this.mongoTemplate = mongoTemplate;
         this.profileRepository = profileRepository;
         this.enderecoRepository = enderecoRepository;
+        this.postalCodeService = postalCodeService;
     }
 
     @Override
@@ -84,11 +88,15 @@ public class AddressServiceImp implements AddressService {
             throw new ProfileException(ErrorType.PROFILE_NOT_FOUND, PROFILE_NOT_FOUND);
         }
 
-        enderecoRepository.findByCep(addressRecord.postalCode())
-                .orElseThrow(() -> {
-                    log.warn("createAddress - CEP not found: {}", addressRecord.postalCode());
-                    return new ProfileException(ErrorType.CEP_NOT_FOUND, "CEP not found");
-                });
+        EnderecoRecord enderecoRecord = postalCodeService.getAddressByPostalCode(addressRecord.postalCode());
+        if (enderecoRecord == null) {
+            log.warn("createAddress - Address not found for postal code: {}", addressRecord.postalCode());
+            enderecoRepository.findByCep(addressRecord.postalCode())
+                    .orElseThrow(() -> {
+                        log.warn("createAddress - CEP not found: {}", addressRecord.postalCode());
+                        return new ProfileException(ErrorType.CEP_NOT_FOUND, "CEP not found");
+                    });
+        }
 
         AddressDocument addressDocument = addressMapper.toAddressDocument(cpf, addressRecord);
         mongoTemplate.save(addressDocument);
