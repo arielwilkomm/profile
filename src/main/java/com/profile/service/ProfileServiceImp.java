@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,7 +80,10 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "profileCache", key = "#cpf")
+    @Caching(evict = {
+            @CacheEvict(value = "profileCache", key = "#cpf"),
+            @CacheEvict(value = "profileCache", key = "allProfiles")
+    })
     public ProfileRecord createProfile(ProfileRecord profileRecord) {
         log.info("createProfile - Creating profile");
         try {
@@ -107,7 +111,10 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "profileCache", key = "#cpf")
+    @Caching(evict = {
+            @CacheEvict(value = "profileCache", key = "#cpf"),
+            @CacheEvict(value = "profileCache", key = "allProfiles")
+    })
     public ProfileRecord updateProfile(String cpf, ProfileRecord profileRecord) {
         log.info("updateProfile - Updating profile");
         try {
@@ -148,7 +155,10 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
-    @CacheEvict(value = "profileCache", key = "#cpf")
+    @Caching(evict = {
+            @CacheEvict(value = "profileCache", key = "#cpf"),
+            @CacheEvict(value = "profileCache", key = "allProfiles")
+    })
     public void deleteProfile(String cpf) {
         log.info("deleteProfile - Deleting profile");
         try {
