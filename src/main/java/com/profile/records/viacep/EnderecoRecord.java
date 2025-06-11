@@ -1,5 +1,8 @@
 package com.profile.records.viacep;
 
+import lombok.Builder;
+
+@Builder
 public record EnderecoRecord(
         String cep,
         String logradouro,

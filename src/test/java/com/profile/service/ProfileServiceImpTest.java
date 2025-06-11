@@ -43,7 +43,7 @@ class ProfileServiceImpTest {
 
     @BeforeEach
     void setUp() {
-        address = new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENTIAL);
+        address = new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENCIAL);
         profileRecord = new ProfileRecord("12345678900", "Nome Exemplo", "email@example.com", "55912345678", List.of(address));
         profileEntity = ProfileMapper.INSTANCE.toProfileEntity(profileRecord);
     }
@@ -201,7 +201,7 @@ class ProfileServiceImpTest {
 
     @Test
     void testCreateProfileMultipleAddresses() {
-        AddressRecord address2 = new AddressRecord("adrs-654321", "Rua Exemplo 2", "Cidade Exemplo 2", "Estado Exemplo 2", "País Exemplo", "23456-789", AddressRecord.AddressType.RESIDENTIAL);
+        AddressRecord address2 = new AddressRecord("adrs-654321", "Rua Exemplo 2", "Cidade Exemplo 2", "Estado Exemplo 2", "País Exemplo", "23456-789", AddressRecord.AddressType.RESIDENCIAL);
         profileRecord = new ProfileRecord("12345678900", "Nome Exemplo", "email@example.com", "55912345678", List.of(address, address2));
         when(profileRepository.save(any(ProfileEntity.class))).thenReturn(profileEntity);
 

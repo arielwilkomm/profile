@@ -31,15 +31,15 @@ class AddressControllerTest {
 
     @BeforeEach
     void setUp() {
-        addressRecord = new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENTIAL);
+        addressRecord = new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENCIAL);
     }
 
     @Test
     void getAllAddressReturnsAddressesWhenCpfExists() {
         String cpf = "12345678900";
         List<AddressRecord> addressRecords = List.of(
-            new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENTIAL),
-            new AddressRecord("adrs-789012", "Rua Teste", "Cidade Teste", "Estado Teste", "País Teste", "98765-432", AddressRecord.AddressType.COMMERCIAL)
+            new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENCIAL),
+            new AddressRecord("adrs-789012", "Rua Teste", "Cidade Teste", "Estado Teste", "País Teste", "98765-432", AddressRecord.AddressType.COMERCIAL)
         );
         when(addressService.getAllAddresses(cpf)).thenReturn(addressRecords);
 

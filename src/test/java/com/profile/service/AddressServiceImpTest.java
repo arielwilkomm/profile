@@ -5,6 +5,7 @@ import com.profile.documents.EnderecoDocument;
 import com.profile.exceptions.ErrorType;
 import com.profile.exceptions.ProfileException;
 import com.profile.records.address.AddressRecord;
+import com.profile.records.viacep.EnderecoRecord;
 import com.profile.repositories.EnderecoRepository;
 import com.profile.repositories.ProfileRepository;
 import org.bson.types.ObjectId;
@@ -35,6 +36,9 @@ class AddressServiceImpTest {
     @Mock
     private EnderecoRepository enderecoRepository;
 
+    @Mock
+    private PostalCodeService postalCodeService;
+
     @InjectMocks
     private AddressServiceImp addressService;
 
@@ -50,7 +54,7 @@ class AddressServiceImpTest {
                 .state("Estado Exemplo")
                 .country("País Exemplo")
                 .postalCode("12345-678")
-                .addressType(AddressRecord.AddressType.RESIDENTIAL)
+                .addressType(AddressRecord.AddressType.RESIDENCIAL)
                 .build();
 
         addressDocument = new AddressDocument();
@@ -59,7 +63,7 @@ class AddressServiceImpTest {
         addressDocument.setState("Estado Exemplo");
         addressDocument.setCountry("País Exemplo");
         addressDocument.setPostalCode("12345-678");
-        addressDocument.setAddressType(AddressRecord.AddressType.RESIDENTIAL);
+        addressDocument.setAddressType(AddressRecord.AddressType.RESIDENCIAL);
     }
 
     void getAllAddressesReturnsListWhenCpfExists() {
@@ -71,7 +75,7 @@ class AddressServiceImpTest {
                         .state("Estado Exemplo")
                         .country("País Exemplo")
                         .postalCode("12345-678")
-                        .addressType(AddressRecord.AddressType.RESIDENTIAL)
+                        .addressType(AddressRecord.AddressType.RESIDENCIAL)
                         .build(),
                 AddressDocument.builder()
                         .street("Rua Teste")
@@ -79,7 +83,7 @@ class AddressServiceImpTest {
                         .state("Estado Teste")
                         .country("País Teste")
                         .postalCode("98765-432")
-                        .addressType(AddressRecord.AddressType.COMMERCIAL)
+                        .addressType(AddressRecord.AddressType.COMERCIAL)
                         .build()
         );
         when(profileRepository.existsById(cpf)).thenReturn(true);
@@ -144,7 +148,8 @@ class AddressServiceImpTest {
         when(profileRepository.existsById("12345678900")).thenReturn(true);
         when(enderecoRepository.findByCep("12345-678")).thenReturn(java.util.Optional.of(new EnderecoDocument()));
         when(mongoTemplate.save(any(AddressDocument.class))).thenReturn(addressDocument);
-
+        when(postalCodeService.getAddressByPostalCode(anyString()))
+                .thenReturn(null);
         AddressRecord result = addressService.createAddress("12345678900", addressRecord);
 
         assertNotNull(result);
@@ -167,7 +172,8 @@ class AddressServiceImpTest {
     void testCreateAddressCepNotFound() {
         when(profileRepository.existsById("12345678900")).thenReturn(true);
         when(enderecoRepository.findByCep("12345-678")).thenReturn(java.util.Optional.empty());
-
+        when(postalCodeService.getAddressByPostalCode(anyString()))
+                .thenReturn(null);
         ProfileException exception = assertThrows(ProfileException.class, () -> {
             addressService.createAddress("12345678900", addressRecord);
         });
