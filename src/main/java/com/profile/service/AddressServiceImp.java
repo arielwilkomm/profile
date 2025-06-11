@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -80,7 +81,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
+    @CacheEvict(value = "addressCache", key = "#cpf")
     public AddressRecord createAddress(String cpf, AddressRecord addressRecord) {
         log.info("createAddress - Creating address");
         if (!profileRepository.existsById(cpf)) {
@@ -105,7 +106,10 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
+    @Caching(evict = {
+            @CacheEvict(value = "addressCache", key = "#cpf"),
+            @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
+    })
     public AddressRecord updateAddress(String cpf, String addressId, AddressRecord addressRecord) {
         log.info("updateAddress - Updating address");
 
@@ -133,7 +137,10 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
+    @Caching(evict = {
+            @CacheEvict(value = "addressCache", key = "#cpf"),
+            @CacheEvict(value = "addressCache", key = "#cpf + '-' + #addressId")
+    })
     public void deleteAddress(String cpf, String addressId) {
         log.info("deleteAddress - Deleting address");
         if (!profileRepository.existsById(cpf)) {
