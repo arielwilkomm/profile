@@ -49,6 +49,49 @@ class ProfileServiceImpTest {
     }
 
     @Test
+    void getProfilesReturnsAllProfilesWithAddresses() {
+        when(profileRepository.findAll()).thenReturn(List.of(profileEntity));
+        when(addressRepository.findAllByCpf(profileEntity.getCpf())).thenReturn(List.of(AddressMapper.INSTANCE.toAddressDocument(profileEntity.getCpf(), address)));
+
+        List<ProfileRecord> result = profileService.getProfiles();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(profileRecord.cpf(), result.get(0).cpf());
+        assertEquals(1, result.get(0).addresses().size());
+    }
+
+    @Test
+    void getProfilesReturnsEmptyListWhenNoProfilesExist() {
+        when(profileRepository.findAll()).thenReturn(List.of());
+
+        List<ProfileRecord> result = profileService.getProfiles();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getProfilesHandlesProfilesWithoutAddresses() {
+        when(profileRepository.findAll()).thenReturn(List.of(profileEntity));
+        when(addressRepository.findAllByCpf(profileEntity.getCpf())).thenReturn(List.of());
+
+        List<ProfileRecord> result = profileService.getProfiles();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(profileRecord.cpf(), result.get(0).cpf());
+        assertTrue(result.get(0).addresses().isEmpty());
+    }
+
+    @Test
+    void getProfilesThrowsExceptionOnRepositoryError() {
+        when(profileRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(RuntimeException.class, () -> profileService.getProfiles());
+    }
+
+    @Test
     void testGetProfileSuccess() {
         when(profileRepository.findById("12345678900")).thenReturn(Optional.of(profileEntity));
         when(addressRepository.findAllByCpf("12345678900")).thenReturn(List.of());

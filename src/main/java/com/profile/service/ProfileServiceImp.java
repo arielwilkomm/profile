@@ -40,6 +40,21 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
+    @Cacheable(value = "profileCache", key = "'allProfiles'")
+    public List<ProfileRecord> getProfiles() {
+        log.info("getProfiles - Find all profiles");
+        return profileRepository.findAll().stream()
+                .map(profileEntity -> {
+                    ProfileRecord profileRecord = profileMapper.toProfileRecord(profileEntity);
+                    List<AddressRecord> addresses = addressRepository.findAllByCpf(profileEntity.getCpf()).stream()
+                            .map(addressMapper::toAddressRecord)
+                            .collect(Collectors.toList());
+                    return profileRecord.withAddresses(addresses);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Cacheable(value = "profileCache", key = "#cpf")
     public ProfileRecord getProfile(String cpf) {
         log.info("getProfile - Fetching profile");

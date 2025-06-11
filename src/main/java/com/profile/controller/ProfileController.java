@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/v1")
@@ -26,6 +28,18 @@ public class ProfileController {
     @Autowired
     public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
+    }
+
+    @GetMapping(value = "/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "Get profile",
+            description = "Retrieve profile information by CPF",
+            security = @SecurityRequirement(name = "PassThrough")
+    )
+    public ResponseEntity<List<ProfileRecord>> getProfiles() {
+        log.info("getProfile - Getting profile");
+        List<ProfileRecord> profiles = profileService.getProfiles();
+        return ResponseEntity.ok(profiles);
     }
 
     @GetMapping(value = "/profile/{cpf}", produces = MediaType.APPLICATION_JSON_VALUE)

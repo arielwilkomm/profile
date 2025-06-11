@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +32,36 @@ class ProfileControllerTest {
     void setUp() {
         AddressRecord address = new AddressRecord("adrs-123456", "Rua Exemplo", "Cidade Exemplo", "Estado Exemplo", "País Exemplo", "12345-678", AddressRecord.AddressType.RESIDENTIAL);
         profileRecord = new ProfileRecord("12345678900", "Nome Exemplo", "email@example.com", "55912345678", List.of(address));
+    }
+
+    @Test
+    void getProfilesEndpointReturnsAllProfilesSuccessfully() {
+        when(profileService.getProfiles()).thenReturn(List.of(profileRecord));
+
+        ResponseEntity<List<ProfileRecord>> response = profileController.getProfiles();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(profileRecord.cpf(), response.getBody().get(0).cpf());
+    }
+
+    @Test
+    void getProfilesEndpointReturnsEmptyListWhenNoProfilesExist() {
+        when(profileService.getProfiles()).thenReturn(List.of());
+
+        ResponseEntity<List<ProfileRecord>> response = profileController.getProfiles();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().isEmpty());
+    }
+
+    @Test
+    void getProfilesEndpointHandlesServiceException() {
+        when(profileService.getProfiles()).thenThrow(new RuntimeException("Service error"));
+
+        assertThrows(RuntimeException.class, () -> profileController.getProfiles());
     }
 
     @Test
